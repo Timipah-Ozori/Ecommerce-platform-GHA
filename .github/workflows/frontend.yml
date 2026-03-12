@@ -36,3 +36,24 @@ jobs:
      
       - name: Build Docker image
         run: docker build -t ecommerce-web .
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            mkdir -p ~/ecommerce-app/frontend
+            cd ~/ecommerce-app/frontend
+
+            git pull || git clone https://github.com/Timipah-Ozori/Ecommerce-platform-GHA.git .
+
+            docker stop ecommerce-frontend || true
+            docker rm ecommerce-frontend || true
+
+            docker build -t ecommerce-frontend .
+            docker run -d -p 80:80 --name ecommerce-frontend ecommerce-frontend
+
+
+
