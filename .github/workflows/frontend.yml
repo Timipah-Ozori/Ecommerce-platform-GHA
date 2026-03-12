@@ -2,11 +2,11 @@ name: Frontend CI
 
 on:
   push:
-    paths:
-      - 'webapp/**'
+    branches:
+      - main
   pull_request:
-    paths:
-      - 'webapp/**'
+    branches:
+      - main
 
 jobs:
   frontend:
