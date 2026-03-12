@@ -44,16 +44,22 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            mkdir -p ~/ecommerce-app/frontend
-            cd ~/ecommerce-app/frontend
+           mkdir -p ~/ecommerce-app/frontend
+           cd ~/ecommerce-app/frontend
 
-            git pull || git clone https://github.com/Timipah-Ozori/Ecommerce-platform-GHA.git .
+           if [ ! -d ".git" ]; then
+           git clone https://github.com/Timipah-Ozori/Ecommerce-platform-GHA.git .
+           else
+           git pull
+           fi
 
-            docker stop ecommerce-frontend || true
-            docker rm ecommerce-frontend || true
+           cd webapp
 
-            docker build -t ecommerce-frontend .
-            docker run -d -p 80:80 --name ecommerce-frontend ecommerce-frontend
+           docker stop ecommerce-frontend || true
+           docker rm ecommerce-frontend || true
+
+           docker build -t ecommerce-frontend .
+           docker run -d -p 80:80 --name ecommerce-frontend ecommerce-frontend
 
 
 
