@@ -42,13 +42,19 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            mkdir -p ~/ecommerce-app/backend
-            cd ~/ecommerce-app/backend
+           mkdir -p ~/ecommerce-app/backend
+           cd ~/ecommerce-app/backend
 
-            git pull || git clone https://github.com/Timipah-Ozori/Ecommerce-platform-GHA.git .
+           if [ ! -d ".git" ]; then
+           git clone https://github.com/Timipah-Ozori/Ecommerce-platform-GHA.git .
+           else
+           git pull
+           fi
 
-            docker stop ecommerce-backend || true
-            docker rm ecommerce-backend || true
+           cd api  
 
-            docker build -t ecommerce-backend .
-            docker run -d -p 3000:3000 --name ecommerce-backend ecommerce-backend
+           docker stop ecommerce-backend || true
+           docker rm ecommerce-backend || true
+
+           docker build -t ecommerce-backend .
+           docker run -d -p 3000:3000 --name ecommerce-backend ecommerce-backend
